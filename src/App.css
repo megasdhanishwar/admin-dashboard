@@ -20,6 +20,7 @@
 .sidebar {
   width: 260px;
   height: 100vh;
+  height: 100dvh;
 
   background: #171b2e;
   color: white;
@@ -38,6 +39,8 @@
   transition:
     width 0.3s ease,
     transform 0.3s ease;
+
+  overflow: hidden;
 }
 
 .sidebar.collapsed {
@@ -117,9 +120,12 @@
 .sidebar-content {
   flex: 1;
 
+  min-height: 0;
+
   padding: 18px 12px;
 
   overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .menu-title {
@@ -219,7 +225,9 @@
 ========================= */
 
 .sidebar-footer {
-  padding: 12px;
+  flex-shrink: 0;
+
+  padding: 10px 12px;
 
   border-top: 1px solid #2a2f46;
 
@@ -235,7 +243,7 @@
    SIDEBAR PROFILE
 ========================= */
 
-/* .sidebar-profile {
+.sidebar-profile {
   position: relative;
 
   display: flex;
@@ -306,7 +314,7 @@
   border: 2px solid #171b2e;
 
   border-radius: 50%;
-} */
+}
 
 
 /* =========================
@@ -406,6 +414,8 @@
 @media (max-width: 768px) {
   .sidebar {
     width: 260px !important;
+    height: 100vh;
+    height: 100dvh;
 
     transform: translateX(-100%);
   }
@@ -414,13 +424,32 @@
     transform: translateX(0);
   }
 
+  .sidebar-content {
+    padding-top: 14px;
+    padding-bottom: 8px;
+  }
+
+  .sidebar-footer {
+    padding: 8px 12px;
+  }
+
+  .sidebar-footer .nav-item {
+    height: 38px;
+  }
+
+  .sidebar-profile {
+    margin: 6px 0;
+    padding: 6px 4px;
+  }
+
+  .sidebar-collapse-btn {
+    height: 34px;
+  }
+
   .close-mobile {
     display: flex;
-
     background: transparent;
-
     color: white;
-
     font-size: 22px;
   }
 }
