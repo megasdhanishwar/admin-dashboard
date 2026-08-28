@@ -4,7 +4,6 @@ import {
   FiShoppingBag,
   FiBarChart2,
   FiSettings,
-  FiHelpCircle,
   FiLogOut,
   FiChevronsLeft,
   FiChevronsRight,
@@ -18,6 +17,7 @@ export default function Sidebar({
   setSidebarCollapsed,
   activeMenu,
   setActiveMenu,
+  onLogout,
 }) {
   const menuItems = [
     {
@@ -31,7 +31,7 @@ export default function Sidebar({
       section: "MANAGEMENT",
     },
     {
-      name: "Orders",
+      name: "Projects",
       icon: <FiShoppingBag />,
       section: "MANAGEMENT",
     },
@@ -49,7 +49,16 @@ export default function Sidebar({
 
   const handleMenuClick = (menuName) => {
     setActiveMenu(menuName);
+
+    // Close sidebar after selecting a menu on mobile
+    if (window.innerWidth <= 768) {
+      setSidebarOpen(false);
+    }
+  };
+
+  const handleLogout = () => {
     setSidebarOpen(false);
+    onLogout();
   };
 
   return (
@@ -59,7 +68,7 @@ export default function Sidebar({
         <div
           className="sidebar-overlay"
           onClick={() => setSidebarOpen(false)}
-        ></div>
+        />
       )}
 
       <aside
@@ -67,31 +76,32 @@ export default function Sidebar({
           sidebarOpen ? "mobile-open" : ""
         } ${sidebarCollapsed ? "collapsed" : ""}`}
       >
-        {/* Logo */}
+        {/* Sidebar Header */}
         <div className="sidebar-header">
           <div className="logo">
             <div className="logo-icon">#</div>
 
-            {!sidebarCollapsed && (
-              <div>
-                <div className="logo-text">AdminFlow</div>
-                <div className="logo-subtext">ADMIN PANEL</div>
-              </div>
-            )}
+            <div className="logo-details">
+              <div className="logo-text">AdminFlow</div>
+
+              <div className="logo-subtext">ADMIN PANEL</div>
+            </div>
           </div>
 
+          {/* Mobile Close Button */}
           <button
             className="close-mobile"
             onClick={() => setSidebarOpen(false)}
+            aria-label="Close sidebar"
           >
             <FiX />
           </button>
         </div>
 
-        {/* Navigation */}
+        {/* Sidebar Navigation */}
         <div className="sidebar-content">
           {/* OVERVIEW */}
-          {!sidebarCollapsed && <p className="menu-title">OVERVIEW</p>}
+          <p className="menu-title overview-title">OVERVIEW</p>
 
           <nav className="nav-menu">
             <button
@@ -99,19 +109,18 @@ export default function Sidebar({
                 activeMenu === "Dashboard" ? "active" : ""
               }`}
               onClick={() => handleMenuClick("Dashboard")}
+              title="Dashboard"
             >
               <span className="nav-icon">
                 <FiGrid />
               </span>
 
-              {!sidebarCollapsed && <span className="nav-text">Dashboard</span>}
+              <span className="nav-text">Dashboard</span>
             </button>
           </nav>
 
           {/* MANAGEMENT */}
-          {!sidebarCollapsed && (
-            <p className="menu-title management-title">MANAGEMENT</p>
-          )}
+          <p className="menu-title management-title">MANAGEMENT</p>
 
           <nav className="nav-menu">
             {menuItems
@@ -123,20 +132,17 @@ export default function Sidebar({
                     activeMenu === item.name ? "active" : ""
                   }`}
                   onClick={() => handleMenuClick(item.name)}
+                  title={item.name}
                 >
                   <span className="nav-icon">{item.icon}</span>
 
-                  {!sidebarCollapsed && (
-                    <span className="nav-text">{item.name}</span>
-                  )}
+                  <span className="nav-text">{item.name}</span>
                 </button>
               ))}
           </nav>
 
           {/* SYSTEM */}
-          {/* {!sidebarCollapsed && (
-            <p className="menu-title management-title">SYSTEM</p>
-          )} */}
+          <p className="menu-title management-title">SYSTEM</p>
 
           <nav className="nav-menu">
             <button
@@ -144,71 +150,43 @@ export default function Sidebar({
                 activeMenu === "Settings" ? "active" : ""
               }`}
               onClick={() => handleMenuClick("Settings")}
+              title="Settings"
             >
               <span className="nav-icon">
                 <FiSettings />
               </span>
 
-              {!sidebarCollapsed && <span className="nav-text">Settings</span>}
+              <span className="nav-text">Settings</span>
             </button>
           </nav>
         </div>
 
-        {/* Bottom Section */}
+        {/* Sidebar Footer */}
         <div className="sidebar-footer">
-          {/* Help */}
-          {/* <button
-            className={`nav-item ${
-              activeMenu === "Help & Support" ? "active" : ""
-            }`}
-            onClick={() => handleMenuClick("Help & Support")}
-          >
-            <span className="nav-icon">
-              <FiHelpCircle />
-            </span>
-
-            {!sidebarCollapsed && (
-              <span className="nav-text">Help & Support</span>
-            )}
-          </button> */}
-
-          {/* Logout */}
           <button
             className="nav-item logout"
+            onClick={handleLogout}
+            title="Logout"
           >
             <span className="nav-icon">
               <FiLogOut />
             </span>
 
-            {!sidebarCollapsed && <span className="nav-text">Logout</span>}
+            <span className="nav-text">Logout</span>
           </button>
-
-          {/* Profile */}
-          {/* <div className="sidebar-profile">
-            <div className="sidebar-profile-avatar">AD</div>
-
-            {!sidebarCollapsed && (
-              <div className="sidebar-profile-info">
-                <h4>Admin User</h4>
-                <span>Administrator</span>
-              </div>
-            )}
-
-            <span className="online-dot"></span>
-          </div> */}
 
           {/* Collapse Button */}
           <button
             className="sidebar-collapse-btn"
-            onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
+            onClick={() => setSidebarCollapsed((previous) => !previous)}
+            title={sidebarCollapsed ? "Expand Sidebar" : "Collapse Sidebar"}
           >
             {sidebarCollapsed ? (
               <FiChevronsRight />
             ) : (
               <>
                 <FiChevronsLeft />
-
-                <span>Collapse</span>
+                <span className="collapse-text">Collapse</span>
               </>
             )}
           </button>

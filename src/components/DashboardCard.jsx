@@ -10,6 +10,7 @@ export default function DashboardCard({
       <div className="card-top">
         <div>
           <p className="card-title">{title}</p>
+
           <h2>{value}</h2>
         </div>
 
