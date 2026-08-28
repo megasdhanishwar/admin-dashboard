@@ -13,13 +13,10 @@ export default function App() {
 
   const [activeMenu, setActiveMenu] = useState("Dashboard");
 
-  // Mobile sidebar
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
-  // Desktop sidebar collapse
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
-  // Global search
   const [search, setSearch] = useState("");
 
   const handleLogin = () => {
@@ -31,7 +28,6 @@ export default function App() {
     localStorage.removeItem("isLoggedIn");
 
     setIsLoggedIn(false);
-
     setActiveMenu("Dashboard");
     setSidebarOpen(false);
     setSidebarCollapsed(false);

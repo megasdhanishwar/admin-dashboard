@@ -8,6 +8,7 @@ import {
   FiChevronsLeft,
   FiChevronsRight,
   FiX,
+  FiCheckSquare,
 } from "react-icons/fi";
 
 export default function Sidebar({
@@ -44,6 +45,11 @@ export default function Sidebar({
       name: "Settings",
       icon: <FiSettings />,
       section: "SYSTEM",
+    },
+    {
+      name: "Tasks",
+      icon: <FiCheckSquare />,
+      section: "MANAGEMENT",
     },
   ];
 

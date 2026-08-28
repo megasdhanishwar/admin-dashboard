@@ -3,7 +3,6 @@ import { useState } from "react";
 import {
   FiGrid,
   FiUsers,
-  FiBarChart2,
   FiSettings,
   FiHelpCircle,
   FiLogOut,
@@ -16,10 +15,11 @@ import {
   FiFileText,
   FiArrowUpRight,
   FiMoreHorizontal,
-  FiSearch,
   FiSave,
   FiBell,
   FiShield,
+  FiTrash2,
+  FiX,
 } from "react-icons/fi";
 
 import DashboardCard from "./DashboardCard";
@@ -36,108 +36,46 @@ export default function DashboardContent({
   const [loading, setLoading] = useState(false);
 
   /* =========================
-     STATISTICS DATA
+     MODALS
   ========================= */
 
-  const statsCards = [
-    {
-      title: "Total Users",
-      value: "12,450",
-      icon: <FiUsers />,
-      change: "+12.5%",
-      changeType: "positive",
-    },
-    {
-      title: "Total Projects",
-      value: "248",
-      icon: <FiFolder />,
-      change: "+8.2%",
-      changeType: "positive",
-    },
-    {
-      title: "Active Tasks",
-      value: "1,286",
-      icon: <FiCheckSquare />,
-      change: "+5.4%",
-      changeType: "positive",
-    },
-    {
-      title: "Completed Tasks",
-      value: "864",
-      icon: <FiCheckCircle />,
-      change: "+18.3%",
-      changeType: "positive",
-    },
-  ];
+  const [showUserModal, setShowUserModal] = useState(false);
+
+  const [showProjectModal, setShowProjectModal] = useState(false);
+
+  const [showTaskModal, setShowTaskModal] = useState(false);
 
   /* =========================
-     RECENT ACTIVITIES
+     FORM STATES
   ========================= */
 
-  const activities = [
-    {
-      initials: "JS",
-      name: "John Smith",
-      activity: "Created a new project",
-      time: "2 min ago",
-    },
-    {
-      initials: "EM",
-      name: "Emma Wilson",
-      activity: "Completed the dashboard task",
-      time: "15 min ago",
-    },
-    {
-      initials: "RK",
-      name: "Robert King",
-      activity: "Added a new team member",
-      time: "1 hour ago",
-    },
-    {
-      initials: "AM",
-      name: "Alex Morgan",
-      activity: "Updated project details",
-      time: "3 hours ago",
-    },
-  ];
+  const [newUser, setNewUser] = useState({
+    name: "",
+    email: "",
+    role: "Developer",
+    status: "Active",
+  });
+
+  const [newProject, setNewProject] = useState({
+    name: "",
+    client: "",
+    status: "Pending",
+    progress: 0,
+  });
+
+  const [newTask, setNewTask] = useState({
+    title: "",
+    project: "",
+    status: "Pending",
+  });
 
   /* =========================
-     RECENT USERS
+     USERS STATE
   ========================= */
 
-  const recentUsers = [
+  const [users, setUsers] = useState([
     {
-      initials: "JD",
-      name: "John Doe",
-      email: "john@example.com",
-      status: "Active",
-    },
-    {
-      initials: "EW",
-      name: "Emma Wilson",
-      email: "emma@example.com",
-      status: "Active",
-    },
-    {
-      initials: "RK",
-      name: "Robert King",
-      email: "robert@example.com",
-      status: "Pending",
-    },
-    {
-      initials: "AM",
-      name: "Alex Morgan",
-      email: "alex@example.com",
-      status: "Active",
-    },
-  ];
-
-  /* =========================
-     USERS DATA
-  ========================= */
-
-  const users = [
-    {
+      id: 1,
       initials: "JD",
       name: "John Doe",
       email: "john@example.com",
@@ -145,6 +83,7 @@ export default function DashboardContent({
       status: "Active",
     },
     {
+      id: 2,
       initials: "EW",
       name: "Emma Wilson",
       email: "emma@example.com",
@@ -152,6 +91,7 @@ export default function DashboardContent({
       status: "Active",
     },
     {
+      id: 3,
       initials: "RK",
       name: "Robert King",
       email: "robert@example.com",
@@ -159,6 +99,7 @@ export default function DashboardContent({
       status: "Pending",
     },
     {
+      id: 4,
       initials: "AM",
       name: "Alex Morgan",
       email: "alex@example.com",
@@ -166,19 +107,20 @@ export default function DashboardContent({
       status: "Active",
     },
     {
+      id: 5,
       initials: "SM",
       name: "Sarah Miller",
       email: "sarah@example.com",
       role: "Tester",
       status: "Inactive",
     },
-  ];
+  ]);
 
   /* =========================
-     PROJECTS DATA
+     PROJECTS STATE
   ========================= */
 
-  const projects = [
+  const [projects, setProjects] = useState([
     {
       id: "#PR-1001",
       name: "Admin Dashboard",
@@ -207,18 +149,315 @@ export default function DashboardContent({
       status: "Pending",
       progress: 25,
     },
-  ];
+  ]);
 
   /* =========================
-     FILTER USERS
+     TASKS STATE
+  ========================= */
+
+  const [tasks, setTasks] = useState([
+    {
+      id: 1,
+      title: "Create Login Page",
+      project: "Admin Dashboard",
+      status: "Completed",
+    },
+    {
+      id: 2,
+      title: "Build User Management",
+      project: "Admin Dashboard",
+      status: "In Progress",
+    },
+    {
+      id: 3,
+      title: "Design Product Page",
+      project: "E-Commerce Website",
+      status: "Pending",
+    },
+  ]);
+
+  /* =========================
+     ACTIVITIES
+  ========================= */
+
+  const [activities, setActivities] = useState([
+    {
+      id: 1,
+      initials: "JS",
+      name: "John Smith",
+      activity: "Created a new project",
+      time: "2 min ago",
+    },
+    {
+      id: 2,
+      initials: "EM",
+      name: "Emma Wilson",
+      activity: "Completed the dashboard task",
+      time: "15 min ago",
+    },
+    {
+      id: 3,
+      initials: "RK",
+      name: "Robert King",
+      activity: "Added a new team member",
+      time: "1 hour ago",
+    },
+  ]);
+
+  /* =========================
+     ADD ACTIVITY
+  ========================= */
+
+  const addActivity = (name, activity) => {
+    const initials = name
+      .split(" ")
+      .map((word) => word[0])
+      .join("")
+      .slice(0, 2)
+      .toUpperCase();
+
+    const newActivity = {
+      id: Date.now(),
+      initials,
+      name,
+      activity,
+      time: "Just now",
+    };
+
+    setActivities((prev) => [newActivity, ...prev]);
+  };
+
+  /* =========================
+     ADD USER
+  ========================= */
+
+  const handleAddUser = (e) => {
+    e.preventDefault();
+
+    if (!newUser.name || !newUser.email) {
+      alert("Please enter name and email.");
+      return;
+    }
+
+    const initials = newUser.name
+      .split(" ")
+      .map((word) => word[0])
+      .join("")
+      .slice(0, 2)
+      .toUpperCase();
+
+    const user = {
+      id: Date.now(),
+      initials,
+      ...newUser,
+    };
+
+    setUsers((prev) => [...prev, user]);
+
+    addActivity(newUser.name, "Joined the platform");
+
+    setNewUser({
+      name: "",
+      email: "",
+      role: "Developer",
+      status: "Active",
+    });
+
+    setShowUserModal(false);
+  };
+
+  /* =========================
+     DELETE USER
+  ========================= */
+
+  const handleDeleteUser = (id, name) => {
+    const confirmDelete = window.confirm(
+      `Are you sure you want to delete ${name}?`,
+    );
+
+    if (!confirmDelete) return;
+
+    setUsers((prev) => prev.filter((user) => user.id !== id));
+
+    addActivity("Admin", `Deleted user ${name}`);
+  };
+
+  /* =========================
+     CREATE PROJECT
+  ========================= */
+
+  const handleCreateProject = (e) => {
+    e.preventDefault();
+
+    if (!newProject.name || !newProject.client) {
+      alert("Please enter project name and client.");
+      return;
+    }
+
+    const project = {
+      id: `#PR-${1000 + projects.length + 1}`,
+      name: newProject.name,
+      client: newProject.client,
+      status: newProject.status,
+      progress: Number(newProject.progress),
+    };
+
+    setProjects((prev) => [...prev, project]);
+
+    addActivity("Admin", `Created project ${newProject.name}`);
+
+    setNewProject({
+      name: "",
+      client: "",
+      status: "Pending",
+      progress: 0,
+    });
+
+    setShowProjectModal(false);
+  };
+
+  /* =========================
+     DELETE PROJECT
+  ========================= */
+
+  const handleDeleteProject = (id, name) => {
+    const confirmDelete = window.confirm(
+      `Are you sure you want to delete ${name}?`,
+    );
+
+    if (!confirmDelete) return;
+
+    setProjects((prev) => prev.filter((project) => project.id !== id));
+
+    addActivity("Admin", `Deleted project ${name}`);
+  };
+
+  /* =========================
+     ADD TASK
+  ========================= */
+
+  const handleAddTask = (e) => {
+    e.preventDefault();
+
+    if (!newTask.title || !newTask.project) {
+      alert("Please enter task details.");
+      return;
+    }
+
+    const task = {
+      id: Date.now(),
+      ...newTask,
+    };
+
+    setTasks((prev) => [...prev, task]);
+
+    addActivity("Admin", `Added task ${newTask.title}`);
+
+    setNewTask({
+      title: "",
+      project: "",
+      status: "Pending",
+    });
+
+    setShowTaskModal(false);
+
+    setActiveMenu("Tasks");
+  };
+
+  /* =========================
+     DELETE TASK
+  ========================= */
+
+  const handleDeleteTask = (id, title) => {
+    const confirmDelete = window.confirm(
+      `Are you sure you want to delete "${title}"?`,
+    );
+
+    if (!confirmDelete) return;
+
+    setTasks((prev) => prev.filter((task) => task.id !== id));
+
+    addActivity("Admin", `Deleted task ${title}`);
+  };
+
+  /* =========================
+     COMPLETE TASK
+  ========================= */
+
+  const handleCompleteTask = (id) => {
+    setTasks((prev) =>
+      prev.map((task) =>
+        task.id === id
+          ? {
+              ...task,
+              status: "Completed",
+            }
+          : task,
+      ),
+    );
+
+    addActivity("Admin", "Completed a task");
+  };
+
+  /* =========================
+     FILTER DATA
   ========================= */
 
   const filteredUsers = users.filter((user) =>
     user.name.toLowerCase().includes(search.toLowerCase()),
   );
 
+  const filteredProjects = projects.filter(
+    (project) =>
+      project.name.toLowerCase().includes(search.toLowerCase()) ||
+      project.client.toLowerCase().includes(search.toLowerCase()),
+  );
+
+  const filteredTasks = tasks.filter(
+    (task) =>
+      task.title.toLowerCase().includes(search.toLowerCase()) ||
+      task.project.toLowerCase().includes(search.toLowerCase()),
+  );
+
   /* =========================
-     LOADING STATE
+     DYNAMIC STATS
+  ========================= */
+
+  const statsCards = [
+    {
+      title: "Total Users",
+      value: users.length,
+      icon: <FiUsers />,
+      change: "Live Data",
+      changeType: "positive",
+    },
+    {
+      title: "Total Projects",
+      value: projects.length,
+      icon: <FiFolder />,
+      change: "Live Data",
+      changeType: "positive",
+    },
+    {
+      title: "Active Tasks",
+      value: tasks.filter(
+        (task) => task.status === "In Progress" || task.status === "Pending",
+      ).length,
+      icon: <FiCheckSquare />,
+      change: "Live Data",
+      changeType: "positive",
+    },
+    {
+      title: "Completed Tasks",
+      value: tasks.filter((task) => task.status === "Completed").length,
+      icon: <FiCheckCircle />,
+      change: "Live Data",
+      changeType: "positive",
+    },
+  ];
+
+  /* =========================
+     LOADING
   ========================= */
 
   if (loading) {
@@ -240,8 +479,6 @@ export default function DashboardContent({
   if (activeMenu === "Dashboard") {
     return (
       <div className="dashboard-content">
-        {/* Statistics Cards */}
-
         <section className="stats-grid">
           {statsCards.map((card) => (
             <DashboardCard
@@ -255,20 +492,16 @@ export default function DashboardContent({
           ))}
         </section>
 
-        {/* Quick Actions */}
-
         <section className="dashboard-section">
           <div className="section-heading">
-            <div>
-              <h3>Quick Actions</h3>
-              <p>Perform common actions quickly</p>
-            </div>
+            <h3>Quick Actions</h3>
+            <p>Perform common actions quickly</p>
           </div>
 
           <div className="quick-actions">
             <button
               className="quick-action-btn"
-              onClick={() => setActiveMenu("Users")}
+              onClick={() => setShowUserModal(true)}
             >
               <FiUserPlus />
               <span>Add User</span>
@@ -276,7 +509,7 @@ export default function DashboardContent({
 
             <button
               className="quick-action-btn"
-              onClick={() => setActiveMenu("Projects")}
+              onClick={() => setShowProjectModal(true)}
             >
               <FiPlus />
               <span>Create Project</span>
@@ -284,7 +517,7 @@ export default function DashboardContent({
 
             <button
               className="quick-action-btn"
-              onClick={() => setActiveMenu("Projects")}
+              onClick={() => setShowTaskModal(true)}
             >
               <FiCheckSquare />
               <span>Add Task</span>
@@ -300,66 +533,36 @@ export default function DashboardContent({
           </div>
         </section>
 
-        {/* Charts and Progress */}
-
         <section className="dashboard-grid">
-          <div className="content-card chart-card">
+          <div className="content-card">
             <div className="content-card-header">
               <div>
                 <h3>Project Overview</h3>
                 <p>Project performance this month</p>
               </div>
-
-              <select defaultValue="This Month">
-                <option>This Month</option>
-                <option>Last Month</option>
-                <option>This Year</option>
-              </select>
             </div>
 
             <div className="chart-container">
               <div className="chart-bars">
-                <div className="chart-column">
-                  <span style={{ height: "45%" }}></span>
-                  <small>Mon</small>
-                </div>
-
-                <div className="chart-column">
-                  <span style={{ height: "65%" }}></span>
-                  <small>Tue</small>
-                </div>
-
-                <div className="chart-column">
-                  <span style={{ height: "55%" }}></span>
-                  <small>Wed</small>
-                </div>
-
-                <div className="chart-column">
-                  <span style={{ height: "85%" }}></span>
-                  <small>Thu</small>
-                </div>
-
-                <div className="chart-column">
-                  <span style={{ height: "70%" }}></span>
-                  <small>Fri</small>
-                </div>
-
-                <div className="chart-column">
-                  <span style={{ height: "95%" }}></span>
-                  <small>Sat</small>
-                </div>
-
-                <div className="chart-column">
-                  <span style={{ height: "78%" }}></span>
-                  <small>Sun</small>
-                </div>
+                {[
+                  ["Mon", 45],
+                  ["Tue", 65],
+                  ["Wed", 55],
+                  ["Thu", 85],
+                  ["Fri", 70],
+                  ["Sat", 95],
+                  ["Sun", 78],
+                ].map(([day, height]) => (
+                  <div className="chart-column" key={day}>
+                    <span style={{ height: `${height}%` }}></span>
+                    <small>{day}</small>
+                  </div>
+                ))}
               </div>
             </div>
           </div>
 
-          {/* Progress */}
-
-          <div className="content-card progress-card">
+          <div className="content-card">
             <div className="content-card-header">
               <div>
                 <h3>Project Progress</h3>
@@ -367,40 +570,28 @@ export default function DashboardContent({
               </div>
             </div>
 
-            <ProgressBar title="Admin Dashboard" progress={75} />
-            <ProgressBar title="E-Commerce Platform" progress={92} />
-            <ProgressBar title="Mobile Application" progress={55} />
-            <ProgressBar title="CRM System" progress={35} />
+            {projects.slice(0, 4).map((project) => (
+              <ProgressBar
+                key={project.id}
+                title={project.name}
+                progress={project.progress}
+              />
+            ))}
           </div>
         </section>
 
-        {/* Recent Data */}
-
         <section className="dashboard-grid">
-          {/* Recent Activities */}
-
           <div className="content-card">
             <div className="content-card-header">
               <div>
                 <h3>Recent Activities</h3>
                 <p>Latest activities from your team</p>
               </div>
-
-              <button
-                className="view-btn"
-                onClick={() => setActiveMenu("Analytics")}
-              >
-                View All
-                <FiArrowUpRight />
-              </button>
             </div>
 
             <div className="activity-list">
-              {activities.map((activity) => (
-                <div
-                  className="activity-item"
-                  key={`${activity.name}-${activity.time}`}
-                >
+              {activities.slice(0, 5).map((activity) => (
+                <div className="activity-item" key={activity.id}>
                   <div className="activity-avatar">{activity.initials}</div>
 
                   <div className="activity-details">
@@ -413,8 +604,6 @@ export default function DashboardContent({
               ))}
             </div>
           </div>
-
-          {/* Recent Users */}
 
           <div className="content-card">
             <div className="content-card-header">
@@ -433,25 +622,26 @@ export default function DashboardContent({
             </div>
 
             <div className="recent-users-list">
-              {recentUsers.map((user) => (
-                <div className="recent-user-item" key={user.email}>
-                  <div className="activity-avatar">{user.initials}</div>
+              {users
+                .slice(-4)
+                .reverse()
+                .map((user) => (
+                  <div className="recent-user-item" key={user.id}>
+                    <div className="activity-avatar">{user.initials}</div>
 
-                  <div className="recent-user-info">
-                    <h4>{user.name}</h4>
-                    <p>{user.email}</p>
+                    <div className="recent-user-info">
+                      <h4>{user.name}</h4>
+                      <p>{user.email}</p>
+                    </div>
+
+                    <span className={`status ${user.status.toLowerCase()}`}>
+                      {user.status}
+                    </span>
                   </div>
-
-                  <span className={`status ${user.status.toLowerCase()}`}>
-                    {user.status}
-                  </span>
-                </div>
-              ))}
+                ))}
             </div>
           </div>
         </section>
-
-        {/* Demo Loading Button */}
 
         <div className="dashboard-demo-actions">
           <button
@@ -467,61 +657,282 @@ export default function DashboardContent({
             Test Loading State
           </button>
         </div>
-      </div>
-    );
-  }
 
-  /* =========================
-     MY PROFILE
-  ========================= */
+        {showUserModal && (
+          <div className="modal-overlay">
+            <div className="modal">
+              <div className="modal-header">
+                <h3>Add New User</h3>
 
-  if (activeMenu === "My Profile") {
-    return (
-      <div className="dashboard-content">
-        <div className="page-section-header">
-          <div>
-            <h2>My Profile</h2>
-            <p>Manage your personal profile information.</p>
-          </div>
+                <button
+                  className="modal-close"
+                  onClick={() => setShowUserModal(false)}
+                >
+                  <FiX />
+                </button>
+              </div>
 
-          <button className="primary-btn">
-            <FiSave />
-            Save Changes
-          </button>
-        </div>
+              <form onSubmit={handleAddUser}>
+                <div className="form-group">
+                  <label>Full Name</label>
 
-        <div className="content-card profile-page-card">
-          <div className="profile-page-header">
-            <div className="profile-page-avatar">AD</div>
+                  <input
+                    type="text"
+                    value={newUser.name}
+                    onChange={(e) =>
+                      setNewUser({
+                        ...newUser,
+                        name: e.target.value,
+                      })
+                    }
+                    placeholder="Enter full name"
+                  />
+                </div>
 
-            <div>
-              <h2>Admin User</h2>
-              <p>Administrator</p>
+                <div className="form-group">
+                  <label>Email</label>
+
+                  <input
+                    type="email"
+                    value={newUser.email}
+                    onChange={(e) =>
+                      setNewUser({
+                        ...newUser,
+                        email: e.target.value,
+                      })
+                    }
+                    placeholder="Enter email"
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label>Role</label>
+
+                  <select
+                    value={newUser.role}
+                    onChange={(e) =>
+                      setNewUser({
+                        ...newUser,
+                        role: e.target.value,
+                      })
+                    }
+                  >
+                    <option>Developer</option>
+                    <option>Designer</option>
+                    <option>Manager</option>
+                    <option>Tester</option>
+                  </select>
+                </div>
+
+                <div className="modal-actions">
+                  <button
+                    type="button"
+                    className="secondary-btn"
+                    onClick={() => setShowUserModal(false)}
+                  >
+                    Cancel
+                  </button>
+
+                  <button type="submit" className="primary-btn">
+                    <FiUserPlus />
+                    Add User
+                  </button>
+                </div>
+              </form>
             </div>
           </div>
+        )}
 
-          <div className="profile-form">
-            <div className="form-group">
-              <label>Full Name</label>
-              <input type="text" defaultValue="Admin User" />
-            </div>
+        {showProjectModal && (
+          <div className="modal-overlay">
+            <div className="modal">
+              <div className="modal-header">
+                <h3>Create Project</h3>
 
-            <div className="form-group">
-              <label>Email Address</label>
-              <input type="email" defaultValue="admin@demo.com" />
-            </div>
+                <button
+                  className="modal-close"
+                  onClick={() => setShowProjectModal(false)}
+                >
+                  <FiX />
+                </button>
+              </div>
 
-            <div className="form-group">
-              <label>Role</label>
-              <input type="text" defaultValue="Administrator" disabled />
-            </div>
+              <form onSubmit={handleCreateProject}>
+                <div className="form-group">
+                  <label>Project Name</label>
 
-            <div className="form-group">
-              <label>Phone Number</label>
-              <input type="text" placeholder="Enter phone number" />
+                  <input
+                    type="text"
+                    value={newProject.name}
+                    onChange={(e) =>
+                      setNewProject({
+                        ...newProject,
+                        name: e.target.value,
+                      })
+                    }
+                    placeholder="Enter project name"
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label>Client Name</label>
+
+                  <input
+                    type="text"
+                    value={newProject.client}
+                    onChange={(e) =>
+                      setNewProject({
+                        ...newProject,
+                        client: e.target.value,
+                      })
+                    }
+                    placeholder="Enter client name"
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label>Status</label>
+
+                  <select
+                    value={newProject.status}
+                    onChange={(e) =>
+                      setNewProject({
+                        ...newProject,
+                        status: e.target.value,
+                      })
+                    }
+                  >
+                    <option>Pending</option>
+                    <option>In Progress</option>
+                    <option>Completed</option>
+                  </select>
+                </div>
+
+                <div className="form-group">
+                  <label>Progress (%)</label>
+
+                  <input
+                    type="number"
+                    min="0"
+                    max="100"
+                    value={newProject.progress}
+                    onChange={(e) =>
+                      setNewProject({
+                        ...newProject,
+                        progress: e.target.value,
+                      })
+                    }
+                  />
+                </div>
+
+                <div className="modal-actions">
+                  <button
+                    type="button"
+                    className="secondary-btn"
+                    onClick={() => setShowProjectModal(false)}
+                  >
+                    Cancel
+                  </button>
+
+                  <button type="submit" className="primary-btn">
+                    <FiPlus />
+                    Create Project
+                  </button>
+                </div>
+              </form>
             </div>
           </div>
-        </div>
+        )}
+
+        {showTaskModal && (
+          <div className="modal-overlay">
+            <div className="modal">
+              <div className="modal-header">
+                <h3>Add New Task</h3>
+
+                <button
+                  className="modal-close"
+                  onClick={() => setShowTaskModal(false)}
+                >
+                  <FiX />
+                </button>
+              </div>
+
+              <form onSubmit={handleAddTask}>
+                <div className="form-group">
+                  <label>Task Title</label>
+
+                  <input
+                    type="text"
+                    value={newTask.title}
+                    onChange={(e) =>
+                      setNewTask({
+                        ...newTask,
+                        title: e.target.value,
+                      })
+                    }
+                    placeholder="Enter task title"
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label>Project</label>
+
+                  <select
+                    value={newTask.project}
+                    onChange={(e) =>
+                      setNewTask({
+                        ...newTask,
+                        project: e.target.value,
+                      })
+                    }
+                  >
+                    <option value="">Select Project</option>
+
+                    {projects.map((project) => (
+                      <option key={project.id} value={project.name}>
+                        {project.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className="form-group">
+                  <label>Status</label>
+
+                  <select
+                    value={newTask.status}
+                    onChange={(e) =>
+                      setNewTask({
+                        ...newTask,
+                        status: e.target.value,
+                      })
+                    }
+                  >
+                    <option>Pending</option>
+                    <option>In Progress</option>
+                    <option>Completed</option>
+                  </select>
+                </div>
+
+                <div className="modal-actions">
+                  <button
+                    type="button"
+                    className="secondary-btn"
+                    onClick={() => setShowTaskModal(false)}
+                  >
+                    Cancel
+                  </button>
+
+                  <button type="submit" className="primary-btn">
+                    <FiCheckSquare />
+                    Add Task
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
       </div>
     );
   }
@@ -539,7 +950,10 @@ export default function DashboardContent({
             <p>Manage all users from one place.</p>
           </div>
 
-          <button className="primary-btn">
+          <button
+            className="primary-btn"
+            onClick={() => setShowUserModal(true)}
+          >
             <FiUserPlus />
             Add User
           </button>
@@ -564,7 +978,7 @@ export default function DashboardContent({
 
                 <tbody>
                   {filteredUsers.map((user) => (
-                    <tr key={user.email}>
+                    <tr key={user.id}>
                       <td>
                         <div className="table-user">
                           <div className="activity-avatar">{user.initials}</div>
@@ -585,8 +999,11 @@ export default function DashboardContent({
                       </td>
 
                       <td>
-                        <button className="icon-action-btn">
-                          <FiMoreHorizontal />
+                        <button
+                          className="icon-action-btn delete-btn"
+                          onClick={() => handleDeleteUser(user.id, user.name)}
+                        >
+                          <FiTrash2 />
                         </button>
                       </td>
                     </tr>
@@ -602,12 +1019,94 @@ export default function DashboardContent({
             />
           )}
         </div>
+
+        {showUserModal && (
+          <div className="modal-overlay">
+            <div className="modal">
+              <div className="modal-header">
+                <h3>Add New User</h3>
+
+                <button
+                  className="modal-close"
+                  onClick={() => setShowUserModal(false)}
+                >
+                  <FiX />
+                </button>
+              </div>
+
+              <form onSubmit={handleAddUser}>
+                <div className="form-group">
+                  <label>Full Name</label>
+
+                  <input
+                    type="text"
+                    value={newUser.name}
+                    onChange={(e) =>
+                      setNewUser({
+                        ...newUser,
+                        name: e.target.value,
+                      })
+                    }
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label>Email</label>
+
+                  <input
+                    type="email"
+                    value={newUser.email}
+                    onChange={(e) =>
+                      setNewUser({
+                        ...newUser,
+                        email: e.target.value,
+                      })
+                    }
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label>Role</label>
+
+                  <select
+                    value={newUser.role}
+                    onChange={(e) =>
+                      setNewUser({
+                        ...newUser,
+                        role: e.target.value,
+                      })
+                    }
+                  >
+                    <option>Developer</option>
+                    <option>Designer</option>
+                    <option>Manager</option>
+                    <option>Tester</option>
+                  </select>
+                </div>
+
+                <div className="modal-actions">
+                  <button
+                    type="button"
+                    className="secondary-btn"
+                    onClick={() => setShowUserModal(false)}
+                  >
+                    Cancel
+                  </button>
+
+                  <button type="submit" className="primary-btn">
+                    Add User
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
       </div>
     );
   }
 
   /* =========================
-     ORDERS / PROJECTS
+     PROJECTS
   ========================= */
 
   if (activeMenu === "Projects") {
@@ -619,14 +1118,27 @@ export default function DashboardContent({
             <p>Track and manage your ongoing projects.</p>
           </div>
 
-          <button className="primary-btn">
-            <FiPlus />
-            Create Project
-          </button>
+          <div className="header-actions">
+            <button
+              className="secondary-btn"
+              onClick={() => setShowTaskModal(true)}
+            >
+              <FiCheckSquare />
+              Add Task
+            </button>
+
+            <button
+              className="primary-btn"
+              onClick={() => setShowProjectModal(true)}
+            >
+              <FiPlus />
+              Create Project
+            </button>
+          </div>
         </div>
 
         <div className="projects-grid">
-          {projects.map((project) => (
+          {filteredProjects.map((project) => (
             <div className="project-card" key={project.id}>
               <div className="project-card-top">
                 <div>
@@ -637,8 +1149,11 @@ export default function DashboardContent({
                   <p>{project.client}</p>
                 </div>
 
-                <button className="icon-action-btn">
-                  <FiMoreHorizontal />
+                <button
+                  className="icon-action-btn delete-btn"
+                  onClick={() => handleDeleteProject(project.id, project.name)}
+                >
+                  <FiTrash2 />
                 </button>
               </div>
 
@@ -668,6 +1183,366 @@ export default function DashboardContent({
             </div>
           ))}
         </div>
+
+        {showProjectModal && (
+          <div className="modal-overlay">
+            <div className="modal">
+              <div className="modal-header">
+                <h3>Create Project</h3>
+
+                <button
+                  className="modal-close"
+                  onClick={() => setShowProjectModal(false)}
+                >
+                  <FiX />
+                </button>
+              </div>
+
+              <form onSubmit={handleCreateProject}>
+                <div className="form-group">
+                  <label>Project Name</label>
+
+                  <input
+                    type="text"
+                    value={newProject.name}
+                    onChange={(e) =>
+                      setNewProject({
+                        ...newProject,
+                        name: e.target.value,
+                      })
+                    }
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label>Client Name</label>
+
+                  <input
+                    type="text"
+                    value={newProject.client}
+                    onChange={(e) =>
+                      setNewProject({
+                        ...newProject,
+                        client: e.target.value,
+                      })
+                    }
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label>Status</label>
+
+                  <select
+                    value={newProject.status}
+                    onChange={(e) =>
+                      setNewProject({
+                        ...newProject,
+                        status: e.target.value,
+                      })
+                    }
+                  >
+                    <option>Pending</option>
+                    <option>In Progress</option>
+                    <option>Completed</option>
+                  </select>
+                </div>
+
+                <div className="form-group">
+                  <label>Progress</label>
+
+                  <input
+                    type="number"
+                    min="0"
+                    max="100"
+                    value={newProject.progress}
+                    onChange={(e) =>
+                      setNewProject({
+                        ...newProject,
+                        progress: e.target.value,
+                      })
+                    }
+                  />
+                </div>
+
+                <div className="modal-actions">
+                  <button
+                    type="button"
+                    className="secondary-btn"
+                    onClick={() => setShowProjectModal(false)}
+                  >
+                    Cancel
+                  </button>
+
+                  <button type="submit" className="primary-btn">
+                    Create Project
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
+
+        {showTaskModal && (
+          <div className="modal-overlay">
+            <div className="modal">
+              <div className="modal-header">
+                <h3>Add New Task</h3>
+
+                <button
+                  className="modal-close"
+                  onClick={() => setShowTaskModal(false)}
+                >
+                  <FiX />
+                </button>
+              </div>
+
+              <form onSubmit={handleAddTask}>
+                <div className="form-group">
+                  <label>Task Title</label>
+
+                  <input
+                    type="text"
+                    value={newTask.title}
+                    onChange={(e) =>
+                      setNewTask({
+                        ...newTask,
+                        title: e.target.value,
+                      })
+                    }
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label>Project</label>
+
+                  <select
+                    value={newTask.project}
+                    onChange={(e) =>
+                      setNewTask({
+                        ...newTask,
+                        project: e.target.value,
+                      })
+                    }
+                  >
+                    <option value="">Select Project</option>
+
+                    {projects.map((project) => (
+                      <option key={project.id} value={project.name}>
+                        {project.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className="form-group">
+                  <label>Status</label>
+
+                  <select
+                    value={newTask.status}
+                    onChange={(e) =>
+                      setNewTask({
+                        ...newTask,
+                        status: e.target.value,
+                      })
+                    }
+                  >
+                    <option>Pending</option>
+                    <option>In Progress</option>
+                    <option>Completed</option>
+                  </select>
+                </div>
+
+                <div className="modal-actions">
+                  <button
+                    type="button"
+                    className="secondary-btn"
+                    onClick={() => setShowTaskModal(false)}
+                  >
+                    Cancel
+                  </button>
+
+                  <button type="submit" className="primary-btn">
+                    Add Task
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
+      </div>
+    );
+  }
+
+  /* =========================
+     TASKS
+  ========================= */
+
+  if (activeMenu === "Tasks") {
+    return (
+      <div className="dashboard-content">
+        <div className="page-section-header">
+          <div>
+            <h2>Tasks</h2>
+            <p>Manage all project tasks.</p>
+          </div>
+
+          <button
+            className="primary-btn"
+            onClick={() => setShowTaskModal(true)}
+          >
+            <FiPlus />
+            Add Task
+          </button>
+        </div>
+
+        <div className="content-card">
+          {filteredTasks.length > 0 ? (
+            <div className="table-wrapper">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Task</th>
+                    <th>Project</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+
+                <tbody>
+                  {filteredTasks.map((task) => (
+                    <tr key={task.id}>
+                      <td>{task.title}</td>
+
+                      <td>{task.project}</td>
+
+                      <td>
+                        <span
+                          className={`status ${task.status
+                            .toLowerCase()
+                            .replace(" ", "-")}`}
+                        >
+                          {task.status}
+                        </span>
+                      </td>
+
+                      <td className="task-actions">
+                        {task.status !== "Completed" && (
+                          <button
+                            className="icon-action-btn"
+                            onClick={() => handleCompleteTask(task.id)}
+                          >
+                            <FiCheckCircle />
+                          </button>
+                        )}
+
+                        <button
+                          className="icon-action-btn delete-btn"
+                          onClick={() => handleDeleteTask(task.id, task.title)}
+                        >
+                          <FiTrash2 />
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          ) : (
+            <EmptyState
+              icon={<FiCheckSquare />}
+              title="No Tasks Found"
+              description="Create a new task to get started."
+            />
+          )}
+        </div>
+
+        {showTaskModal && (
+          <div className="modal-overlay">
+            <div className="modal">
+              <div className="modal-header">
+                <h3>Add New Task</h3>
+
+                <button
+                  className="modal-close"
+                  onClick={() => setShowTaskModal(false)}
+                >
+                  <FiX />
+                </button>
+              </div>
+
+              <form onSubmit={handleAddTask}>
+                <div className="form-group">
+                  <label>Task Title</label>
+
+                  <input
+                    type="text"
+                    value={newTask.title}
+                    onChange={(e) =>
+                      setNewTask({
+                        ...newTask,
+                        title: e.target.value,
+                      })
+                    }
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label>Project</label>
+
+                  <select
+                    value={newTask.project}
+                    onChange={(e) =>
+                      setNewTask({
+                        ...newTask,
+                        project: e.target.value,
+                      })
+                    }
+                  >
+                    <option value="">Select Project</option>
+
+                    {projects.map((project) => (
+                      <option key={project.id} value={project.name}>
+                        {project.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className="form-group">
+                  <label>Status</label>
+
+                  <select
+                    value={newTask.status}
+                    onChange={(e) =>
+                      setNewTask({
+                        ...newTask,
+                        status: e.target.value,
+                      })
+                    }
+                  >
+                    <option>Pending</option>
+                    <option>In Progress</option>
+                    <option>Completed</option>
+                  </select>
+                </div>
+
+                <div className="modal-actions">
+                  <button
+                    type="button"
+                    className="secondary-btn"
+                    onClick={() => setShowTaskModal(false)}
+                  >
+                    Cancel
+                  </button>
+
+                  <button type="submit" className="primary-btn">
+                    Add Task
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
       </div>
     );
   }
@@ -693,103 +1568,36 @@ export default function DashboardContent({
 
         <section className="stats-grid">
           <DashboardCard
-            title="Total Visits"
-            value="48,250"
-            icon={<FiActivity />}
-            change="+16.4%"
-            changeType="positive"
-          />
-
-          <DashboardCard
-            title="New Users"
-            value="1,248"
+            title="Total Users"
+            value={users.length}
             icon={<FiUsers />}
-            change="+10.8%"
+            change="Live Data"
             changeType="positive"
           />
 
           <DashboardCard
             title="Projects Created"
-            value="248"
+            value={projects.length}
             icon={<FiFolder />}
-            change="+7.2%"
+            change="Live Data"
+            changeType="positive"
+          />
+
+          <DashboardCard
+            title="Active Tasks"
+            value={tasks.filter((task) => task.status !== "Completed").length}
+            icon={<FiCheckSquare />}
+            change="Live Data"
             changeType="positive"
           />
 
           <DashboardCard
             title="Tasks Completed"
-            value="864"
+            value={tasks.filter((task) => task.status === "Completed").length}
             icon={<FiCheckCircle />}
-            change="+21.3%"
+            change="Live Data"
             changeType="positive"
           />
-        </section>
-
-        <section className="dashboard-grid">
-          <div className="content-card chart-card">
-            <div className="content-card-header">
-              <div>
-                <h3>User Activity</h3>
-                <p>Weekly user activity</p>
-              </div>
-            </div>
-
-            <div className="chart-container">
-              <div className="chart-bars">
-                <div className="chart-column">
-                  <span style={{ height: "50%" }}></span>
-                  <small>Mon</small>
-                </div>
-
-                <div className="chart-column">
-                  <span style={{ height: "75%" }}></span>
-                  <small>Tue</small>
-                </div>
-
-                <div className="chart-column">
-                  <span style={{ height: "60%" }}></span>
-                  <small>Wed</small>
-                </div>
-
-                <div className="chart-column">
-                  <span style={{ height: "90%" }}></span>
-                  <small>Thu</small>
-                </div>
-
-                <div className="chart-column">
-                  <span style={{ height: "70%" }}></span>
-                  <small>Fri</small>
-                </div>
-
-                <div className="chart-column">
-                  <span style={{ height: "95%" }}></span>
-                  <small>Sat</small>
-                </div>
-
-                <div className="chart-column">
-                  <span style={{ height: "82%" }}></span>
-                  <small>Sun</small>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="content-card progress-card">
-            <div className="content-card-header">
-              <div>
-                <h3>Performance</h3>
-                <p>Current system performance</p>
-              </div>
-            </div>
-
-            <ProgressBar title="User Engagement" progress={82} />
-
-            <ProgressBar title="Task Completion" progress={74} />
-
-            <ProgressBar title="Project Delivery" progress={91} />
-
-            <ProgressBar title="Team Productivity" progress={68} />
-          </div>
         </section>
       </div>
     );
@@ -833,7 +1641,7 @@ export default function DashboardContent({
 
             <div className="settings-info">
               <h3>Notifications</h3>
-              <p>Configure email and application notifications.</p>
+              <p>Configure application notifications.</p>
             </div>
           </div>
 
@@ -882,7 +1690,7 @@ export default function DashboardContent({
   }
 
   /* =========================
-     LOGOUT PAGE
+     LOGOUT
   ========================= */
 
   if (activeMenu === "Logout") {
